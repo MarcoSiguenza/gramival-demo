@@ -98,5 +98,3 @@ Próximas mejoras:
 ## Autor
 
 **Marco Sigüenza**
-
-Proyecto desarrollado como parte de un trabajo para portafolio profesional.
