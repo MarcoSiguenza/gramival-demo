@@ -1,0 +1,245 @@
+/* Variables de color y tipografia, todo el tema vive aqui */
+:root{
+  --ink:#182420;
+  --forest:#1F5C46;
+  --forest-dark:#153F30;
+  --turf:#3E8F5C;
+  --stone:#F1F1EC;
+  --concrete:#E2E0D5;
+  --amber:#E8862E;
+  --amber-dark:#C96C1B;
+  --slate:#5C6B63;
+  --white:#FFFFFF;
+}
+
+*{ box-sizing:border-box; }
+body{ margin:0; font-family:'Inter',sans-serif; color:var(--ink); background:var(--stone); }
+h1,h2,h3{ font-family:'Archivo',sans-serif; font-weight:800; margin:0; }
+h3{ font-size:16px; margin-bottom:14px; }
+p{ margin:0; }
+button{ font-family:inherit; }
+select, input, textarea{ font-family:inherit; }
+
+.mono{ font-family:'IBM Plex Mono',monospace; }
+.muted{ color:var(--slate); }
+.strong{ font-weight:700; }
+.small{ font-size:12px; }
+.big{ font-size:20px; }
+.right{ text-align:right; }
+.hidden{ display:none !important; }
+
+/* Botones */
+.btn{ font-weight:600; font-size:14px; padding:10px 16px; border-radius:8px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:6px; }
+.btn-primary{ background:var(--forest); color:#fff; }
+.btn-primary:hover{ background:var(--forest-dark); }
+.btn-amber{ background:var(--amber); color:#fff; }
+.btn-amber:hover{ background:var(--amber-dark); }
+.btn-ghost{ background:#fff; color:var(--forest); border:1px solid var(--concrete); }
+.btn-ghost:hover{ border-color:var(--forest); }
+.btn:disabled{ opacity:.45; cursor:not-allowed; }
+.btn.full{ width:100%; justify-content:center; margin-top:6px; }
+.link-btn{ background:none; border:none; color:var(--slate); font-size:14px; cursor:pointer; padding:4px 0; }
+.link-btn:hover{ color:var(--forest); }
+.small-btn{ padding:6px 10px; font-size:12px; }
+.icon-btn{ background:none; border:none; color:var(--slate); cursor:pointer; font-size:14px; }
+.btn-row{ display:flex; gap:10px; }
+
+/* Pantalla de login */
+.login-wrap{ min-height:100vh; display:flex; }
+.login-hero{ display:none; width:50%; background:linear-gradient(160deg, var(--forest), var(--forest-dark)); color:#fff; padding:48px; flex-direction:column; justify-content:space-between; }
+.login-hero-copy h1{ font-size:34px; line-height:1.2; margin-bottom:12px; }
+.login-hero-copy p{ color:rgba(255,255,255,.7); max-width:380px; }
+.login-hero-footer{ color:rgba(255,255,255,.5); font-size:12px; font-family:'IBM Plex Mono',monospace; }
+.login-form-side{ flex:1; display:flex; align-items:center; justify-content:center; padding:24px; }
+.login-card{ width:100%; max-width:380px; background:#fff; border:1px solid var(--concrete); border-radius:12px; padding:28px; }
+.login-card h2{ font-size:20px; margin-bottom:4px; }
+.login-card .muted{ font-size:14px; margin-bottom:20px; display:block; }
+.demo-users{ margin-top:22px; padding-top:18px; border-top:1px solid var(--concrete); }
+.demo-users-title{ font-size:12px; font-weight:700; text-transform:uppercase; margin-bottom:8px; }
+.demo-user{ width:100%; text-align:left; background:#fff; border:1px solid var(--concrete); border-radius:8px; padding:9px 12px; margin-bottom:6px; font-family:'IBM Plex Mono',monospace; font-size:13px; cursor:pointer; }
+.demo-user:hover{ background:var(--stone); }
+.demo-user span{ opacity:.6; margin-left:4px; }
+.brand{ display:flex; align-items:center; gap:8px; font-family:'Archivo',sans-serif; font-weight:800; letter-spacing:.3px; }
+.brand-icon{ width:34px; height:34px; border-radius:8px; background:rgba(255,255,255,.15); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Archivo',sans-serif; font-weight:800; font-size:13px; }
+.brand-icon.small{ width:28px; height:28px; font-size:11px; }
+
+/* Formularios */
+.field{ display:block; margin-bottom:14px; }
+.field span, .field-label{ display:block; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.3px; color:var(--slate); margin-bottom:6px; }
+input, select, textarea{ width:100%; border:1px solid var(--concrete); border-radius:8px; padding:10px 12px; font-size:14px; background:#fff; color:var(--ink); }
+input:focus, select:focus, textarea:focus{ outline:2px solid var(--turf); outline-offset:1px; border-color:var(--turf); }
+.grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:0 14px; }
+.toggle-row{ display:flex; gap:8px; }
+.toggle-btn{ flex:1; padding:10px; border-radius:8px; border:1px solid var(--concrete); background:#fff; font-weight:600; font-size:14px; cursor:pointer; }
+.toggle-btn.on{ border-color:var(--forest); background:#EAF3EE; color:var(--forest); }
+.mini-input{ width:90px; text-align:right; padding:6px 10px; }
+
+/* Layout general */
+.shell{ min-height:100vh; display:flex; }
+.sidebar{ width:230px; background:var(--forest-dark); display:none; flex-direction:column; flex-shrink:0; }
+.sidebar-brand{ display:flex; align-items:center; gap:8px; padding:18px; background:var(--forest); color:#fff; }
+.sidebar-nav{ flex:1; padding:14px 10px; }
+.nav-link{ width:100%; text-align:left; background:none; border:none; color:rgba(255,255,255,.65); font-size:14px; font-weight:500; padding:10px 12px; border-radius:8px; margin-bottom:2px; cursor:pointer; }
+.nav-link.active{ background:rgba(255,255,255,.12); color:#fff; }
+.sidebar-user{ padding:12px; border-top:1px solid rgba(255,255,255,.1); }
+.user-chip{ display:flex; align-items:center; gap:8px; padding:8px; color:#fff; }
+.user-avatar{ width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0; }
+.user-name{ font-size:13px; font-weight:600; }
+.user-role{ font-size:11px; color:rgba(255,255,255,.5); }
+.sidebar-user .link-btn{ color:rgba(255,255,255,.5); }
+
+.main-col{ flex:1; min-width:0; display:flex; flex-direction:column; }
+.topbar-mobile{ display:flex; align-items:center; justify-content:space-between; padding:12px 16px; background:var(--forest); color:#fff; }
+.menu-btn{ background:none; border:none; color:#fff; font-size:20px; cursor:pointer; }
+.mobile-nav{ background:var(--forest-dark); padding:8px; }
+.mobile-nav .nav-link{ color:rgba(255,255,255,.8); }
+.main-content{ flex:1; padding:0 0 30px; }
+.bottom-tabs{ display:flex; border-top:1px solid var(--concrete); background:#fff; }
+.bottom-tab{ flex:1; background:none; border:none; padding:10px 4px; font-size:11px; font-weight:600; color:var(--slate); cursor:pointer; }
+.bottom-tab.active{ color:var(--forest); }
+
+.page-header{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:22px 20px 14px; }
+.page-header h1{ font-size:24px; }
+.page-header p{ margin-top:4px; font-size:14px; }
+
+/* Tarjetas y estadisticas */
+.card{ background:#fff; border:1px solid var(--concrete); border-radius:10px; margin:0 20px 16px; }
+.card.pad{ padding:20px; }
+.card-header{ padding:16px 20px; border-bottom:1px solid var(--concrete); font-family:'Archivo',sans-serif; font-weight:700; }
+.flex-between{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.flex-between.wrap{ flex-wrap:wrap; }
+.flex-gap{ display:flex; align-items:center; gap:8px; }
+
+.stat-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; padding:0 20px 16px; }
+.stat-card{ background:#fff; border:1px solid var(--concrete); border-radius:10px; padding:14px; display:flex; align-items:center; gap:10px; }
+.stat-icon{ width:40px; height:40px; border-radius:8px; flex-shrink:0; }
+.stat-value{ font-family:'Archivo',sans-serif; font-weight:800; font-size:22px; line-height:1; }
+.stat-label{ font-size:11px; color:var(--slate); margin-top:4px; }
+
+/* Lista de cotizaciones (dashboard) */
+.quote-list{ display:flex; flex-direction:column; }
+.quote-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:13px 20px; border-top:1px solid var(--concrete); background:none; border-left:none; border-right:none; border-bottom:none; width:100%; text-align:left; cursor:pointer; }
+.quote-row:hover{ background:var(--stone); }
+.quote-row-main{ display:flex; flex-direction:column; gap:2px; min-width:0; flex:1; }
+.quote-row-loc{ font-size:11px; color:var(--slate); }
+
+/* Insignias de estado */
+.badge{ font-family:'Archivo',sans-serif; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.3px; padding:4px 10px; border-radius:999px; white-space:nowrap; }
+.st-borrador{ background:#EDEBE2; color:#6B6A5E; }
+.st-pendiente{ background:#FCE9D2; color:#B25E12; }
+.st-aprobada{ background:#DCEEE1; color:#1F7A45; }
+.st-programada{ background:#DCE7F2; color:#1E5B96; }
+.st-venta{ background:#1F5C46; color:#fff; }
+.st-rechazada{ background:#F6DEDA; color:#B23A2A; }
+.st-cancelada{ background:#E9E7E2; color:#8A887C; }
+
+/* Tablas */
+.table-wrap{ overflow-x:auto; }
+table{ width:100%; border-collapse:collapse; font-size:14px; }
+th{ text-align:left; font-size:11px; text-transform:uppercase; color:var(--slate); padding:10px 12px; background:var(--stone); }
+td{ padding:10px 12px; border-top:1px solid var(--concrete); }
+tbody tr[onclick]{ cursor:pointer; }
+tbody tr[onclick]:hover{ background:var(--stone); }
+.empty-cell{ text-align:center; padding:30px; color:var(--slate); }
+
+/* Filtros de historial */
+.filter-bar{ display:flex; flex-wrap:wrap; gap:8px; }
+.search-input{ flex:1; min-width:180px; }
+.filter-bar select{ width:auto; }
+
+/* Asistente de nueva cotizacion */
+.wizard-wrap{ padding:0 20px; max-width:760px; }
+.wizard-ruler{ margin-bottom:20px; }
+.ruler-labels{ display:flex; justify-content:space-between; margin-bottom:6px; }
+.ruler-label{ font-size:10px; font-weight:700; text-transform:uppercase; color:var(--slate); opacity:.5; }
+.ruler-label.on{ color:var(--forest); opacity:1; }
+.ruler-track{ height:6px; background:var(--concrete); border-radius:3px; overflow:hidden; }
+.ruler-fill{ height:100%; background:var(--turf); transition:width .3s ease; }
+.ruler-caption{ font-size:11px; color:var(--slate); margin-top:6px; }
+
+.freight-box{ margin-top:14px; padding:14px; border-radius:8px; background:#EAF3EE; display:flex; align-items:center; justify-content:space-between; }
+.freight-title{ font-size:12px; font-weight:700; text-transform:uppercase; color:var(--forest); }
+
+.photo-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:8px; }
+.photo-thumb{ position:relative; aspect-ratio:1; border-radius:8px; overflow:hidden; }
+.photo-thumb img{ width:100%; height:100%; object-fit:cover; }
+.photo-thumb button{ position:absolute; top:4px; right:4px; width:20px; height:20px; border-radius:50%; background:rgba(0,0,0,.6); color:#fff; border:none; cursor:pointer; font-size:11px; }
+.photo-add{ aspect-ratio:1; border-radius:8px; border:2px dashed var(--concrete); background:none; color:var(--slate); font-size:12px; cursor:pointer; }
+.photo-row{ display:flex; gap:6px; flex-wrap:wrap; }
+.mini-photo{ width:40px; height:40px; border-radius:6px; object-fit:cover; }
+.detail-photo{ width:64px; height:64px; border-radius:8px; object-fit:cover; margin-top:8px; margin-right:6px; }
+
+.empty-box{ padding:26px; text-align:center; color:var(--slate); background:var(--stone); border-radius:8px; font-size:14px; }
+.subtotal-line{ margin-top:12px; padding-top:12px; border-top:1px solid var(--concrete); font-size:14px; }
+.item-form{ margin-top:16px; padding:16px; border-radius:8px; background:var(--stone); border:1px solid var(--concrete); }
+.item-form-title{ font-weight:700; margin-bottom:10px; }
+
+.adjust-box{ background:var(--stone); border-radius:8px; padding:16px; }
+.row{ display:flex; align-items:center; justify-content:space-between; padding:6px 0; font-size:14px; }
+.row .amber{ color:var(--amber-dark); }
+.total-row{ border-top:1px solid var(--concrete); margin-top:6px; padding-top:12px; font-family:'Archivo',sans-serif; font-weight:800; color:var(--forest); }
+.mini-totals{ width:100%; max-width:220px; }
+
+/* Detalle de cotizacion */
+.detail-top{ padding:20px 20px 0; }
+.detail-top h1{ font-size:22px; }
+.detail-grid{ display:grid; grid-template-columns:1fr; gap:16px; padding:0 20px; margin-top:14px; }
+.detail-main{ display:flex; flex-direction:column; gap:16px; }
+.status-choices{ margin-top:12px; display:flex; flex-wrap:wrap; gap:8px; }
+.status-chip{ font-size:11px; font-weight:700; text-transform:uppercase; padding:6px 12px; border-radius:999px; border:none; cursor:pointer; }
+.status-chip:disabled{ opacity:.4; cursor:not-allowed; }
+
+.history-list{ display:flex; flex-direction:column; }
+.history-item{ display:flex; gap:10px; padding-bottom:14px; position:relative; }
+.history-dot{ width:9px; height:9px; border-radius:50%; background:var(--forest); margin-top:5px; flex-shrink:0; }
+
+/* Precios y catalogos administrativos */
+.list{ display:flex; flex-direction:column; }
+.list-row{ display:flex; align-items:center; justify-content:space-between; padding:12px 20px; border-top:1px solid var(--concrete); font-size:14px; }
+.pill{ font-size:11px; font-weight:700; padding:4px 10px; border-radius:999px; }
+.pill-on{ background:#DCEEE1; color:#1F7A45; }
+.pill-off{ background:#E9E7E2; color:#8A887C; }
+
+/* Grafica de barras sencilla del dashboard admin */
+.bar-chart{ display:flex; align-items:flex-end; gap:26px; height:200px; padding-top:10px; }
+.bar-col{ display:flex; flex-direction:column; align-items:center; justify-content:flex-end; flex:1; height:100%; }
+.bar{ width:44px; background:var(--forest); border-radius:6px 6px 0 0; min-height:4px; }
+.bar-val{ margin-top:6px; }
+.bar-label{ margin-top:2px; }
+
+/* Vista de PDF */
+.pdf-actions{ display:flex; align-items:center; justify-content:space-between; padding:16px 20px; }
+.pdf-page{ background:#fff; border:1px solid var(--concrete); border-radius:10px; max-width:720px; margin:0 20px 30px; padding:32px; box-shadow:0 4px 24px rgba(0,0,0,.06); }
+.pdf-header{ display:flex; align-items:flex-start; justify-content:space-between; padding-bottom:20px; margin-bottom:20px; border-bottom:3px solid var(--forest); }
+.pdf-brand{ display:flex; align-items:center; gap:10px; }
+.pdf-brand .brand-icon{ background:var(--forest); }
+.pdf-table{ width:100%; }
+.pdf-table th{ background:var(--stone); }
+.pdf-footer{ text-align:center; font-size:10px; color:var(--slate); padding-top:16px; border-top:1px solid var(--concrete); margin-top:10px; }
+
+/* Utilidades responsive */
+.hide-sm{ display:none; }
+.hide-md{ display:none; }
+
+@media print{
+  .sidebar, .topbar-mobile, .mobile-nav, .bottom-tabs, .no-print{ display:none !important; }
+  .pdf-page{ box-shadow:none; border:none; margin:0; }
+  body{ background:#fff; }
+}
+
+@media (min-width:640px){
+  .hide-sm{ display:table-cell; }
+  .photo-grid{ grid-template-columns:repeat(5,1fr); }
+}
+
+@media (min-width:860px){
+  .hide-md{ display:table-cell; }
+  .sidebar{ display:flex; }
+  .topbar-mobile, .mobile-nav, .bottom-tabs{ display:none !important; }
+  .stat-grid{ grid-template-columns:repeat(5,1fr); }
+  .detail-grid{ grid-template-columns:2fr 1fr; }
+}
+
+@media (max-width:480px){
+  .grid-2{ grid-template-columns:1fr; }
+}
