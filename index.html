@@ -11,7 +11,29 @@
     <!-- Todo el contenido se dibuja aqui desde app.js -->
     <div id="app"></div>
 
+    <!-- Modal reutilizable -->
+    <div id="modalOverlay" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalTitle">Título</h2>
+
+                <button id="modalCloseBtn" class="modal-close">
+                    ✕
+                </button>
+            </div>
+
+            <div id="modalBody" class="modal-body">
+            </div>
+
+            <div id="modalFooter" class="modal-footer">
+            </div>
+        </div>
+    </div>
+    
     <script src="js/data.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/prices.js"></script>
+    <script src="js/modal.js"></script>
+
   </body>
 </html>

@@ -766,7 +766,8 @@ function renderAdminPrices() {
       <div class="list">${grassRows}</div>
     </div>
     <div class="card" style="margin-top:16px">
-    <div class="card-header flex-between"><span>Precio base por ubicacion</span><button class="btn btn-ghost small-btn" onclick="addZonePrice()">+ Nuevo precio</button></div>      <div class="table-wrap"><table><thead><tr><th>Departamento</th><th>Zona</th><th class="right">Precio base /m2</th><th></th></tr></thead><tbody>${zoneRows}</tbody></table></div>
+    <div class="card-header flex-between"><span>Precio base por ubicacion</span><button class="btn btn-ghost small-btn" onclick="openNewLocationModal()">+ Nueva ubicación</button></div>      
+    <div class="table-wrap"><table><thead><tr><th>Departamento</th><th>Zona</th><th class="right">Precio base /m2</th><th></th></tr></thead><tbody>${zoneRows}</tbody></table></div>
     </div>`;
 }
 
