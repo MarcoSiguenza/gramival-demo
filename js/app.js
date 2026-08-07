@@ -313,6 +313,7 @@ function saveQuote() {
   state.activeId = draft.id;
   state.wizard = null;
   state.view = "detail";
+  showToast("Cotizacion guardada");
   render();
 }
 

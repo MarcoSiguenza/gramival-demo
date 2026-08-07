@@ -150,6 +150,7 @@ function saveLocation() {
     setZonePrice(key, "Rural", rural);
 
     closeModal();
+    showToast("Ubicacion registrada");
     render();
 }
 
@@ -201,6 +202,7 @@ function saveGrassPrice(id) {
 
     grass.price = price;
     closeModal();
+    showToast("Precio actualizado");
     render();
 }
 function openEditZonePriceModal(index) {
@@ -253,6 +255,7 @@ function saveZonePrice(index) {
 
     entry.price = price;
     closeModal();
+    showToast("Precio actualizado");
     render();
 }
 
@@ -272,5 +275,6 @@ function openDeleteZonePriceModal(index) {
 function deleteZonePrice(index) {
     PRICE_BY_ZONE.splice(index, 1);
     closeModal();
+    showToast("Precio eliminado");
     render();
 }

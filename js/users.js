@@ -97,6 +97,7 @@ function saveUser(id) {
     if (role === "Vendedor" && !VENDORS.includes(name)) VENDORS.push(name);
 
     closeModal();
+    showToast(id ? "Usuario actualizado" : "Usuario creado");
     render();
 }
 

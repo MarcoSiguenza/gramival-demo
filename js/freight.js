@@ -116,6 +116,7 @@ function saveFreight(id) {
     }
 
     closeModal();
+    showToast(id ? "Tarifa actualizada" : "Tarifa creada");
     render();
 }
 
@@ -138,5 +139,6 @@ function deleteFreight(id) {
 
     FREIGHT.splice(index, 1);
     closeModal();
+    showToast("Tarifa eliminada");
     render();
 }

@@ -91,5 +91,6 @@ function saveProduct(id) {
     }
 
     closeModal();
+    showToast(id ? "Producto actualizado" : "Producto creado");
     render();
 }
