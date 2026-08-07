@@ -80,18 +80,9 @@ El objetivo es desarrollar una solución que permita a los vendedores generar co
 
 ## Estado del proyecto
 
-En desarrollo
+Terminada, a la espera de revision.
 
-Actualmente se encuentra en proceso de mejora continua para evolucionar desde una demo funcional hacia una aplicación profesional.
-
-Próximas mejoras:
-
-- Sistema de modales.
-- Gestión completa de ubicaciones.
-- Notificaciones tipo Toast.
-- Mejoras de interfaz.
-- Refactorización del código.
-- Integración con backend.
+Actualmente la demo se encuentra en un estado finalizada, por lo que se espera la revision de sus funcionalidades.
 
 ---
 
