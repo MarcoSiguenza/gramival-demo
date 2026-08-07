@@ -432,7 +432,7 @@ function renderWizardStep() {
           <label class="field"><span>Nombre</span><input value="${f.name}" oninput="wizardItemFormSet('name', this.value)" /></label>
           <label class="field"><span>Unidad</span>
             <select onchange="wizardItemFormSet('unit', this.value)">
-              ${["m2", "ML", "m3", "Unidad", "Otros"].map(u => `<option ${f.unit === u ? "selected" : ""}>${u}</option>`).join("")}
+              ${UNITS.map(u => `<option ${f.unit === u ? "selected" : ""}>${u}</option>`).join("")}
             </select>
           </label>
           <label class="field"><span>Cantidad</span><input type="number" value="${f.qty}" oninput="wizardItemFormSet('qty', this.value)" /></label>
@@ -746,9 +746,9 @@ function renderAdminProducts() {
   const rows = CATALOG.map(c => `<tr>
     <td class="strong">${c.name}</td><td class="hide-sm">${c.unit}</td><td class="right mono">${fmtQ(c.price)}</td>
     <td><span class="pill ${c.active ? "pill-on" : "pill-off"}">${c.active ? "Activo" : "Inactivo"}</span></td>
-    <td class="right"><button class="link-btn">Editar</button></td>
+    <td class="right"><button class="link-btn" onclick="openProductModal('${c.id}')">Editar</button></td>
   </tr>`).join("");
-  return pageHeader("Productos y servicios", "Catalogo configurable de partidas para las cotizaciones", `<button class="btn btn-amber">+ Nuevo producto</button>`) + `
+  return pageHeader("Productos y servicios", "Catalogo configurable de partidas para las cotizaciones", `<button class="btn btn-amber" onclick="openProductModal()">+ Nuevo producto</button>`) + `
     <div class="card"><div class="table-wrap"><table><thead><tr><th>Nombre</th><th class="hide-sm">Unidad</th><th class="right">Precio base</th><th>Estado</th><th></th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
 }
 

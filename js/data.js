@@ -29,6 +29,8 @@ const CATALOG = [
   { id: "p10", name: "Marcaje de lineas deportivas", unit: "ML", price: 12, active: false },
 ];
 
+const UNITS = ["m2", "ML", "m3", "Unidad", "Otros"];
+
 const FREIGHT = [
   { id: "f1", dept: "Guatemala", muni: "Guatemala", zone: "Urbana", price: 600 },
   { id: "f2", dept: "Guatemala", muni: "Guatemala", zone: "Rural", price: 950 },
