@@ -22,6 +22,8 @@ const STATUS_STYLE = {
   "Cancelada": "st-cancelada",
 };
 
+const EDITABLE_STATUSES = ["Borrador", "Pendiente", "Aprobada", "Programada"];
+
 /* Formatear numero como moneda en quetzales */
 function fmtQ(n) {
   n = Number(n || 0);
@@ -122,17 +124,23 @@ function navItems() {
   return [["dashboard", "Inicio"], ["history", "Cotizaciones"], ["wizard", "Nueva"]];
 }
 
+function isNavActive(id) {
+  if (state.view === "wizard" && state.wizard && state.wizard.editingId) return id === "history";
+  if (id === "history") return state.view === "history" || state.view === "detail";
+  return state.view === id;
+}
+
 function renderShell(innerHtml) {
   const items = navItems();
   const navLinks = items.map(([id, label]) => {
-    const active = state.view === id || (id === "history" && state.view === "detail");
+    const active = isNavActive(id);
     return `<button class="nav-link ${active ? "active" : ""}" onclick="goto('${id}')">${label}</button>`;
   }).join("");
 
   const bottomTabs = state.user.role === "Vendedor" ? `
     <div class="bottom-tabs">
       ${[["dashboard", "Inicio"], ["history", "Cotizaciones"], ["wizard", "Nueva"]].map(([id, label]) => {
-        const active = state.view === id || (id === "history" && state.view === "detail");
+        const active = isNavActive(id);
         return `<button class="bottom-tab ${active ? "active" : ""}" onclick="goto('${id}')">${label}</button>`;
       }).join("")}
     </div>` : "";
@@ -220,9 +228,37 @@ function emptyDraft() {
 }
 
 function startWizard() {
-  state.wizard = { step: 0, draft: emptyDraft(), itemForm: null };
+  state.wizard = { step: 0, draft: emptyDraft(), itemForm: null, editingId: null };
   state.view = "wizard";
   render();
+}
+
+function editQuote(id) {
+  const quote = state.quotes.find(q => q.id === id);
+  if (!quote) return;
+
+  state.wizard = {
+    step: 0,
+    draft: JSON.parse(JSON.stringify(quote)),
+    itemForm: null,
+    editingId: id
+  };
+  state.view = "wizard";
+  render();
+}
+
+function cancelWizard() {
+  const editingId = state.wizard.editingId;
+  state.wizard = null;
+
+  if (editingId) {
+    state.activeId = editingId;
+    state.view = "detail";
+    render();
+    return;
+  }
+
+  goto(state.user.role === "Administrador" ? "admin-dashboard" : "dashboard");
 }
 
 function cancelWizard() {
@@ -235,11 +271,43 @@ function wizardUpdate(path, value) {
   render();
 }
 
+function wizardInput(path, value) {
+  setPath(state.wizard.draft, path, value);
+  refreshWizardNav();
+  refreshWizardTotals();
+}
+
+function wizardItemInput(field, value) {
+  state.wizard.itemForm[field] = value;
+  refreshItemFormTotal();
+}
+
+function refreshWizardNav() {
+  const next = document.getElementById("wizard-next");
+  if (next) next.disabled = !wizardStepValid();
+}
+
+function refreshWizardTotals() {
+  const t = calcTotals(state.wizard.draft);
+  const discountEl = document.getElementById("wz-discount-amt");
+  const totalEl = document.getElementById("wz-total");
+
+  if (discountEl) discountEl.textContent = "-" + fmtQ(t.discountAmt);
+  if (totalEl) totalEl.textContent = fmtQ(t.total);
+}
+
+function refreshItemFormTotal() {
+  const f = state.wizard.itemForm;
+  const el = document.getElementById("wz-line-total");
+  if (el) el.textContent = fmtQ((f.qty || 0) * (f.price || 0));
+}
+
 function wizardStepValid() {
   const d = state.wizard.draft;
   if (state.wizard.step === 0) return d.client.name && d.client.contact;
   if (state.wizard.step === 1) return d.location.dept && d.location.muni;
   if (state.wizard.step === 2) return d.area && d.grassType;
+  if (state.wizard.step === 4) return d.items.length > 0;
   return true;
 }
 
@@ -307,13 +375,27 @@ function wizardRemoveItem(id) {
 
 function saveQuote() {
   const draft = state.wizard.draft;
-  draft.status = "Pendiente";
-  draft.history.push({ date: today(), to: "Pendiente", user: draft.vendor });
-  state.quotes.unshift(draft);
+  const editingId = state.wizard.editingId;
+
+  draft.discountPct = Number(draft.discountPct) || 0;
+  draft.manualAdjustment = Number(draft.manualAdjustment) || 0;
+
+  if (editingId) {
+    const index = state.quotes.findIndex(q => q.id === editingId);
+    if (index === -1) return;
+
+    draft.history.push({ date: today(), to: "Editada", user: state.user.name });
+    state.quotes[index] = draft;
+  } else {
+    draft.status = "Pendiente";
+    draft.history.push({ date: today(), to: "Pendiente", user: draft.vendor });
+    state.quotes.unshift(draft);
+  }
+
   state.activeId = draft.id;
   state.wizard = null;
   state.view = "detail";
-  showToast("Cotizacion guardada");
+  showToast(editingId ? "Cotizacion actualizada" : "Cotizacion guardada");
   render();
 }
 
@@ -335,8 +417,8 @@ function renderWizardStep() {
 
   if (step === 0) {
     return `<h3>Datos del cliente</h3>
-      <label class="field"><span>Nombre del cliente</span><input value="${d.client.name}" oninput="wizardUpdate('client.name', this.value)" placeholder="Ej. Carlos Mendez" /></label>
-      <label class="field"><span>Contacto (telefono o correo)</span><input value="${d.client.contact}" oninput="wizardUpdate('client.contact', this.value)" placeholder="Ej. 5555-5555" /></label>
+      <label class="field"><span>Nombre del cliente</span><input id="wz-client-name" value="${d.client.name}" oninput="wizardInput('client.name', this.value)" placeholder="Ej. Carlos Mendez" /></label>
+      <label class="field"><span>Contacto (telefono o correo)</span><input id="wz-client-contact" value="${d.client.contact}" oninput="wizardInput('client.contact', this.value)" placeholder="Ej. 5555-5555" /></label>
       <p class="muted small">Los datos del cliente se guardan como parte de esta cotizacion, no se crea un registro de cliente aparte.</p>`;
   }
 
@@ -373,7 +455,7 @@ function renderWizardStep() {
   if (step === 2) {
     return `<h3>Informacion del proyecto</h3>
       <div class="grid-2">
-        <label class="field"><span>Metros cuadrados (m2)</span><input type="number" value="${d.area}" oninput="wizardUpdate('area', this.value)" placeholder="500" /></label>
+        <label class="field"><span>Metros cuadrados (m2)</span><input id="wz-area" type="number" value="${d.area}" oninput="wizardInput('area', this.value)" placeholder="500" /></label>
         <label class="field"><span>Tipo de gramilla</span>
           <select onchange="wizardUpdate('grassType', this.value)">
             ${GRASS_TYPES.map(g => `<option value="${g.name}" ${d.grassType === g.name ? "selected" : ""}>${g.name} - ${fmtQ(g.price)}/${g.unit}</option>`).join("")}
@@ -404,9 +486,8 @@ function renderWizardStep() {
   if (step === 3) {
     const photoThumbs = d.photos.map((p, i) => `<div class="photo-thumb"><img src="${p}" /><button onclick="wizardRemovePhoto(${i})">x</button></div>`).join("");
     return `<h3>Condiciones y fotografias</h3>
-      <label class="field"><span>Condiciones del terreno</span><textarea rows="3" oninput="wizardUpdate('conditions', this.value)" placeholder="El terreno presenta una superficie relativamente nivelada...">${d.conditions}</textarea></label>
-      <label class="field"><span>Observaciones</span><textarea rows="2" oninput="wizardUpdate('observations', this.value)" placeholder="Notas adicionales para esta cotizacion">${d.observations}</textarea></label>
-      <span class="field-label">Fotografias</span>
+      <label class="field"><span>Condiciones del terreno</span><textarea id="wz-conditions" rows="3" oninput="wizardInput('conditions', this.value)" placeholder="El terreno presenta una superficie relativamente nivelada...">${d.conditions}</textarea></label>
+      <label class="field"><span>Observaciones</span><textarea id="wz-observations" rows="2" oninput="wizardInput('observations', this.value)" placeholder="Notas adicionales para esta cotizacion">${d.observations}</textarea></label>
       <div class="photo-grid">${photoThumbs}<button class="photo-add" onclick="wizardAddPhoto()">+ Agregar</button></div>`;
   }
 
@@ -430,22 +511,22 @@ function renderWizardStep() {
           </select>
         </label>
         <div class="grid-2">
-          <label class="field"><span>Nombre</span><input value="${f.name}" oninput="wizardItemFormSet('name', this.value)" /></label>
+          <label class="field"><span>Nombre</span><input id="wz-item-name" value="${f.name}" oninput="wizardItemInput('name', this.value)" /></label>
           <label class="field"><span>Unidad</span>
             <select onchange="wizardItemFormSet('unit', this.value)">
               ${UNITS.map(u => `<option ${f.unit === u ? "selected" : ""}>${u}</option>`).join("")}
             </select>
           </label>
-          <label class="field"><span>Cantidad</span><input type="number" value="${f.qty}" oninput="wizardItemFormSet('qty', this.value)" /></label>
-          <label class="field"><span>Precio unitario</span><input type="number" value="${f.price}" oninput="wizardItemFormSet('price', this.value)" /></label>
+          <label class="field"><span>Cantidad</span><input id="wz-item-qty" type="number" value="${f.qty}" oninput="wizardItemInput('qty', this.value)" /></label>
+          <label class="field"><span>Precio unitario</span><input id="wz-item-price" type="number" value="${f.price}" oninput="wizardItemInput('price', this.value)" /></label>
         </div>
-        <div class="small muted" style="margin-bottom:10px">Total de linea: <span class="mono strong">${fmtQ((f.qty || 0) * (f.price || 0))}</span></div>
+        <div class="small muted" style="margin-bottom:10px">Total de linea: <span id="wz-line-total" class="mono strong">${fmtQ((f.qty || 0) * (f.price || 0))}</span></div>
         <div class="btn-row"><button class="btn btn-primary" onclick="wizardAddItem()">Agregar</button><button class="btn btn-ghost" onclick="wizardCloseItemForm()">Cancelar</button></div>
       </div>`;
     }
 
     return `<div class="flex-between"><h3>Partidas de cotizacion</h3><button class="btn btn-ghost" onclick="wizardOpenItemForm()">+ Agregar partida</button></div>
-      ${d.items.length === 0 ? `<div class="empty-box">Aun no hay partidas. Agrega la primera.</div>` : `
+      ${d.items.length === 0 ? `<div class="empty-box">Aun no hay partidas. Agrega al menos una para continuar.</div>` : `
       <div class="table-wrap"><table><thead><tr><th>Descripcion</th><th class="right">Cant.</th><th>Unidad</th><th class="right">P. unit.</th><th class="right">Total</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
       <div class="right subtotal-line">Subtotal: <span class="mono strong big">${fmtQ(totals.subtotal)}</span></div>`}
       ${itemFormHtml}`;
@@ -456,10 +537,10 @@ function renderWizardStep() {
     return `<h3>Descuento y ajuste</h3>
       <div class="adjust-box">
         <div class="row"><span class="muted">Subtotal</span><span class="mono">${fmtQ(t.subtotal)}</span></div>
-        <div class="row"><span class="muted">Descuento (%)</span><input type="number" class="mini-input" value="${d.discountPct}" oninput="wizardUpdate('discountPct', Number(this.value))" /></div>
-        <div class="row"><span class="muted">Descuento aplicado</span><span class="mono amber">-${fmtQ(t.discountAmt)}</span></div>
-        <div class="row"><span class="muted">Ajuste manual (Q)</span><input type="number" class="mini-input" value="${d.manualAdjustment}" oninput="wizardUpdate('manualAdjustment', Number(this.value))" /></div>
-        <div class="row total-row"><span>Total</span><span class="mono big">${fmtQ(t.total)}</span></div>
+        <div class="row"><span class="muted">Descuento (%)</span><input id="wz-discount" type="number" class="mini-input" value="${d.discountPct}" oninput="wizardInput('discountPct', this.value)" /></div>
+        <div class="row"><span class="muted">Descuento aplicado</span><span id="wz-discount-amt" class="mono amber">-${fmtQ(t.discountAmt)}</span></div>
+        <div class="row"><span class="muted">Ajuste manual (Q)</span><input id="wz-adjustment" type="number" class="mini-input" value="${d.manualAdjustment}" oninput="wizardInput('manualAdjustment', this.value)" /></div>
+        <div class="row total-row"><span>Total</span><span id="wz-total" class="mono big">${fmtQ(t.total)}</span></div>
       </div>`;
   }
 
@@ -493,16 +574,22 @@ function renderQuoteSummary(q) {
 
 function renderWizard() {
   const step = state.wizard.step;
+  const isEditing = Boolean(state.wizard.editingId);
   const isLast = step === WIZARD_STEPS.length - 1;
   const nextDisabled = !wizardStepValid();
-  return pageHeader("Nueva cotizacion", `Codigo provisional ${state.wizard.draft.code}`, `<button class="link-btn" onclick="cancelWizard()">Cancelar</button>`) + `
+
+  const title = isEditing ? "Editar cotizacion" : "Nueva cotizacion";
+  const subtitle = isEditing ? `Cotizacion ${state.wizard.draft.code}` : `Codigo provisional ${state.wizard.draft.code}`;
+  const saveLabel = isEditing ? "Guardar cambios" : "Guardar cotizacion";
+
+  return pageHeader(title, subtitle, `<button class="link-btn" onclick="cancelWizard()">Cancelar</button>`) + `
     <div class="wizard-wrap">
       ${renderRuler()}
       <div class="card pad">${renderWizardStep()}</div>
       <div class="flex-between" style="margin-top:16px">
         <button class="btn btn-ghost" onclick="wizardBack()">&larr; ${step === 0 ? "Cancelar" : "Atras"}</button>
-        ${isLast ? `<button class="btn btn-amber" onclick="saveQuote()">Guardar cotizacion</button>`
-          : `<button class="btn btn-primary" ${nextDisabled ? "disabled" : ""} onclick="wizardNext()">Siguiente &rarr;</button>`}
+        ${isLast ? `<button class="btn btn-amber" onclick="saveQuote()">${saveLabel}</button>`
+          : `<button id="wizard-next" class="btn btn-primary" ${nextDisabled ? "disabled" : ""} onclick="wizardNext()">Siguiente &rarr;</button>`}
       </div>
     </div>`;
 }
@@ -586,6 +673,7 @@ function renderDetail() {
   const q = state.quotes.find(x => x.id === state.activeId);
   if (!q) return `<p>Cotizacion no encontrada.</p>`;
   const t = calcTotals(q);
+  const canEdit = EDITABLE_STATUSES.includes(q.status);
 
   const statusButtons = state.changingStatus ? `<div class="card pad status-choices">
     ${STATUSES.map(s => `<button class="status-chip ${STATUS_STYLE[s]}" ${s === q.status ? "disabled" : ""} onclick="changeStatus('${s}')">${s}</button>`).join("")}
@@ -602,6 +690,7 @@ function renderDetail() {
       <div class="flex-between wrap">
         <div><div class="flex-gap"><h1 class="mono">${q.code}</h1>${badge(q.status)}</div><p class="muted">${q.client.name} - ${q.date} - Vendedor: ${q.vendor}</p></div>
         <div class="btn-row">
+          ${canEdit ? `<button class="btn btn-ghost" onclick="editQuote('${q.id}')">Editar</button>` : ""}
           <button class="btn btn-ghost" onclick="viewPdf()">Ver PDF</button>
           <button class="btn btn-amber" onclick="toggleChangeStatus()">Cambiar estado</button>
         </div>
