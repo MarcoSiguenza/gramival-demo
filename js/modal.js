@@ -86,8 +86,27 @@
     lastFocused = null;
   }
 
+  function confirmModal({ title = "", message = "", detail = "", confirmLabel = "Confirmar", onConfirm }) {
+    openModal({
+      title,
+      body: `
+        <p id="confirmMessage"></p>
+        ${detail ? `<p id="confirmDetail" class="muted small"></p>` : ""}
+      `,
+      footer: `
+        <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button id="confirmActionBtn" class="btn btn-danger">${confirmLabel}</button>
+      `,
+      onOpen: (refs) => {
+        refs.body.querySelector("#confirmMessage").textContent = message;
+        if (detail) refs.body.querySelector("#confirmDetail").textContent = detail;
+        refs.footer.querySelector("#confirmActionBtn").addEventListener("click", onConfirm);
+      }
+    });
+  }
+
   function focusFirstField() {
-const first = getRefs().body.querySelector("input, select, textarea, button")
+    const first = getRefs().body.querySelector("input, select, textarea, button")
       || getRefs().footer.querySelector("button");
     if (first) first.focus();
   }
@@ -114,4 +133,5 @@ const first = getRefs().body.querySelector("input, select, textarea, button")
   window.openModal = openModal;
   window.closeModal = closeModal;
   window.setModalError = setModalError;
+  window.confirmModal = confirmModal;
 })();

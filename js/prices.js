@@ -260,20 +260,12 @@ function openDeleteZonePriceModal(index) {
     const entry = PRICE_BY_ZONE[index];
     if (!entry) return;
 
-    openModal({
+    confirmModal({
         title: "Eliminar precio",
-        body: `
-            <p>Vas a eliminar el precio de <span id="zoneTarget" class="strong"></span>.</p>
-            <p class="muted small">Las cotizaciones ya guardadas no se modifican.</p>
-        `,
-        footer: `
-            <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
-            <button id="confirmDeleteZoneBtn" class="btn btn-danger">Eliminar</button>
-        `,
-        onOpen: (refs) => {
-            refs.body.querySelector("#zoneTarget").textContent = entry.dept + " - Zona " + entry.zone;
-            refs.footer.querySelector("#confirmDeleteZoneBtn").addEventListener("click", () => deleteZonePrice(index));
-        }
+        message: `Vas a eliminar el precio de ${entry.dept} - Zona ${entry.zone}.`,
+        detail: "Las cotizaciones ya guardadas no se modifican.",
+        confirmLabel: "Eliminar",
+        onConfirm: () => deleteZonePrice(index)
     });
 }
 

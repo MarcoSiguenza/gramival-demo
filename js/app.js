@@ -753,8 +753,19 @@ function renderAdminProducts() {
 }
 
 function renderAdminFreight() {
-  const rows = FREIGHT.map(f => `<tr><td>${f.dept}</td><td>${f.muni}</td><td>${f.zone}</td><td class="right mono">${fmtQ(f.price)}</td><td class="right"><button class="link-btn">Editar</button></td></tr>`).join("");
-  return pageHeader("Fletes", "Tarifas de transporte por departamento, municipio y zona", `<button class="btn btn-amber">+ Nueva tarifa</button>`) + `
+  const rows = FREIGHT.map(f => `<tr>
+    <td>${f.dept}</td>
+    <td>${f.muni}</td>
+    <td>${f.zone}</td>
+    <td class="right mono">${fmtQ(f.price)}</td>
+    <td>
+      <div class="row-actions">
+        <button class="link-btn" onclick="openFreightModal('${f.id}')">Editar</button>
+        <button class="link-btn danger" onclick="openDeleteFreightModal('${f.id}')">Eliminar</button>
+      </div>
+    </td>
+  </tr>`).join("") || `<tr><td colspan="5" class="empty-cell">Aun no hay tarifas de flete registradas.</td></tr>`;
+  return pageHeader("Fletes", "Tarifas de transporte por departamento, municipio y zona", `<button class="btn btn-amber" onclick="openFreightModal()">+ Nueva tarifa</button>`) + `
     <div class="card"><div class="table-wrap"><table><thead><tr><th>Departamento</th><th>Municipio</th><th>Zona</th><th class="right">Precio de flete</th><th></th></tr></thead><tbody>${rows}</tbody></table></div></div>
     <p class="muted small" style="margin-top:10px">Los cambios realizados afectaran las nuevas cotizaciones.</p>`;
 }
