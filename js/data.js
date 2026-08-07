@@ -62,6 +62,8 @@ const USERS = [
   { id: "u5", name: "Ana Castillo", email: "ana@demo.com", role: "Vendedor", status: "Inactivo" },
 ];
 
+const ROLES = ["Administrador", "Vendedor"];
+
 const STATUSES = ["Borrador", "Pendiente", "Aprobada", "Programada", "Venta realizada", "Rechazada", "Cancelada"];
 
 const PHOTOS = [

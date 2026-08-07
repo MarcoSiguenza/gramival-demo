@@ -771,9 +771,20 @@ function renderAdminFreight() {
 }
 
 function renderAdminUsers() {
-  const rows = USERS.map(u => `<tr><td class="strong">${u.name}</td><td class="mono small muted">${u.email}</td><td>${u.role}</td><td><span class="pill ${u.status === "Activo" ? "pill-on" : "pill-off"}">${u.status}</span></td></tr>`).join("");
-  return pageHeader("Usuarios", "Vendedores y administradores del sistema", `<button class="btn btn-amber">+ Nuevo usuario</button>`) + `
-    <div class="card"><div class="table-wrap"><table><thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  const rows = USERS.map(u => `<tr>
+    <td class="strong">${u.name}</td>
+    <td class="mono small muted">${u.email}</td>
+    <td>${u.role}</td>
+    <td><span class="pill ${u.status === "Activo" ? "pill-on" : "pill-off"}">${u.status}</span></td>
+    <td>
+      <div class="row-actions">
+        <button class="link-btn" onclick="openUserModal('${u.id}')">Editar</button>
+      </div>
+    </td>
+  </tr>`).join("") || `<tr><td colspan="5" class="empty-cell">Aun no hay usuarios registrados.</td></tr>`;
+
+  return pageHeader("Usuarios", "Vendedores y administradores del sistema", `<button class="btn btn-amber" onclick="openUserModal()">+ Nuevo usuario</button>`) + `
+    <div class="card"><div class="table-wrap"><table><thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th></th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
 }
 
 /* RENDER PRINCIPAL */
