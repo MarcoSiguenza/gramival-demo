@@ -6,7 +6,6 @@ function openNewLocationModal() {
     openModal({
         title: "Nueva ubicación",
         body: `
-            <p id="locationError" class="form-error hidden"></p>
             <div class="form-group">
                 <label>Departamento</label>
                 <input id="newDept" type="text" placeholder="Ej. Quetzaltenango">
@@ -47,12 +46,6 @@ function openNewLocationModal() {
         }
     });
 }
-function setLocationError(message) {
-    const box = document.getElementById("locationError");
-    if (!box) return;
-    box.textContent = message || "";
-    box.classList.toggle("hidden", !message);
-}
 
 function renderMunicipalityList() {
     const list = document.getElementById("municipalityList");
@@ -90,7 +83,7 @@ function addMunicipality() {
     }
 
     if (municipalities.some(m => m.toLowerCase() === name.toLowerCase())) {
-        setLocationError("Ese municipio ya está en la lista.");
+        setModalError("Ese municipio ya está en la lista.");
         input.select();
         return;
     }
@@ -98,7 +91,7 @@ function addMunicipality() {
     municipalities.push(name);
     input.value = "";
     input.focus();
-    setLocationError("");
+    setModalError("");
     renderMunicipalityList();
 }
 
@@ -121,25 +114,25 @@ function saveLocation() {
     const rural = Number(ruralInput.value);
 
     if (!dept) {
-        setLocationError("Escribe el nombre del departamento.");
+        setModalError("Escribe el nombre del departamento.");
         deptInput.focus();
         return;
     }
 
     if (!municipalities.length) {
-        setLocationError("Agrega al menos un municipio con el botón +.");
+        setModalError("Agrega al menos un municipio con el botón +.");
         document.getElementById("municipalityInput").focus();
         return;
     }
 
     if (!urban || urban <= 0) {
-        setLocationError("El precio urbano debe ser mayor a cero.");
+        setModalError("El precio urbano debe ser mayor a cero.");
         urbanInput.focus();
         return;
     }
 
     if (!rural || rural <= 0) {
-        setLocationError("El precio rural debe ser mayor a cero.");
+        setModalError("El precio rural debe ser mayor a cero.");
         ruralInput.focus();
         return;
     }
@@ -156,6 +149,57 @@ function saveLocation() {
     setZonePrice(key, "Urbana", urban);
     setZonePrice(key, "Rural", rural);
 
+    closeModal();
+    render();
+}
+
+function openEditGrassPriceModal(id) {
+    const grass = GRASS_TYPES.find(g => g.id === id);
+    if (!grass) return;
+
+    openModal({
+        title: "Editar precio base",
+        body: `
+            <div class="form-group">
+                <label>Tipo de grama</label>
+                <p class="muted">${grass.name}</p>
+            </div>
+            <div class="form-group">
+                <label>Precio por ${grass.unit}</label>
+                <input id="grassPrice" type="number" min="0" step="0.01" value="${grass.price}">
+            </div>
+        `,
+        footer: `
+            <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+            <button id="saveGrassPriceBtn" class="btn btn-primary">Guardar</button>
+        `,
+        onOpen: (refs) => {
+            const input = refs.body.querySelector("#grassPrice");
+            input.select();
+
+            refs.footer.querySelector("#saveGrassPriceBtn").addEventListener("click", () => saveGrassPrice(id));
+            input.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    saveGrassPrice(id);
+                }
+            });
+        }
+    });
+}
+
+function saveGrassPrice(id) {
+    const grass = GRASS_TYPES.find(g => g.id === id);
+    const input = document.getElementById("grassPrice");
+    const price = Number(input.value);
+
+    if (!price || price <= 0) {
+        setModalError("El precio debe ser mayor a cero.");
+        input.focus();
+        return;
+    }
+
+    grass.price = price;
     closeModal();
     render();
 }

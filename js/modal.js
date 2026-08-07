@@ -62,6 +62,7 @@
     document.body.classList.add("modal-open");
 
     /* Enganchar la logica del formulario recien inyectado */
+    setModalError("");
     if (typeof config.onOpen === "function") {
       config.onOpen({ body: r.body, footer: r.footer, close: closeModal });
     }
@@ -92,6 +93,20 @@
     if (first) first.focus();
   }
 
+  function setModalError(message) {
+    const r = getRefs();
+    let box = r.body.querySelector(".modal-error");
+
+    if (!box) {
+      box = document.createElement("p");
+      box.className = "modal-error form-error";
+      r.body.insertBefore(box, r.body.firstChild);
+    }
+
+    box.textContent = message || "";
+    box.classList.toggle("hidden", !message);
+  }
+
   /* Escape cierra el modal. Un solo listener para toda la aplicacion. */
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && isOpen()) closeModal();
@@ -99,4 +114,5 @@
 
   window.openModal = openModal;
   window.closeModal = closeModal;
+  window.setModalError = setModalError;
 })();

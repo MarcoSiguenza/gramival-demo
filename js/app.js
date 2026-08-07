@@ -728,36 +728,8 @@ function editGrassPrice(id) {
   render();
 }
 
-/* Agregar o actualizar un precio base por departamento y zona */
-function addZonePrice() {
-  const deptTexto = prompt("Departamento (puedes escribir uno nuevo o uno ya existente)");
-  if (deptTexto === null) return; /* el usuario le dio cancelar */
-  const dept = deptTexto.trim();
-  if (!dept) { alert("Escribe un nombre de departamento"); return; }
-
-  const zoneTexto = prompt("Zona (Urbana o Rural)", "Urbana");
-  if (zoneTexto === null) return;
-  const zoneLimpio = zoneTexto.trim().toLowerCase();
-  const zone = zoneLimpio === "urbana" ? "Urbana" : zoneLimpio === "rural" ? "Rural" : null;
-  if (!zone) { alert("La zona debe ser Urbana o Rural"); return; }
-
-  const precioTexto = prompt(`Precio base por m2 para ${dept} - ${zone}`);
-  if (precioTexto === null) return;
-  const precio = Number(precioTexto);
-  if (isNaN(precio) || precio <= 0) { alert("Ingresa un numero valido mayor a cero"); return; }
-
-  /* Buscar sin importar mayusculas o minusculas, para no crear el mismo departamento dos veces */
-  const existente = PRICE_BY_ZONE.find(p => p.dept.toLowerCase() === dept.toLowerCase() && p.zone === zone);
-  if (existente) {
-    existente.price = precio;
-  } else {
-    PRICE_BY_ZONE.push({ dept, zone, price: precio });
-  }
-  render();
-}
-
 function renderAdminPrices() {
-  const grassRows = GRASS_TYPES.map(g => `<div class="list-row"><span>${g.name}</span><div class="flex-gap"><span class="mono strong">${fmtQ(g.price)} / ${g.unit}</span><button class="btn btn-ghost small-btn" onclick="editGrassPrice('${g.id}')">Editar</button></div></div>`).join("");
+  const grassRows = GRASS_TYPES.map(g => `<div class="list-row"><span>${g.name}</span><div class="flex-gap"><span class="mono strong">${fmtQ(g.price)} / ${g.unit}</span><button class="btn btn-ghost small-btn" onclick="openEditGrassPriceModal('${g.id}')">Editar</button></div></div>`).join("");
   const zoneRows = PRICE_BY_ZONE.map(p => `<tr><td>${p.dept}</td><td>${p.zone}</td><td class="right mono">${fmtQ(p.price)}</td><td class="right"><button class="link-btn">Editar</button></td></tr>`).join("");
 
   return pageHeader("Precios", "Gestiona los precios base de gramilla por tipo y por ubicacion") + `
