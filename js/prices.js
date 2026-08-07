@@ -203,3 +203,82 @@ function saveGrassPrice(id) {
     closeModal();
     render();
 }
+function openEditZonePriceModal(index) {
+    const entry = PRICE_BY_ZONE[index];
+    if (!entry) return;
+
+    openModal({
+        title: "Editar precio por ubicación",
+        body: `
+            <div class="form-group">
+                <label>Ubicación</label>
+                <p id="zoneLocation" class="muted"></p>
+            </div>
+            <div class="form-group">
+                <label>Precio base por m2</label>
+                <input id="zonePrice" type="number" min="0" step="0.01" value="${entry.price}">
+            </div>
+        `,
+        footer: `
+            <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+            <button id="saveZonePriceBtn" class="btn btn-primary">Guardar</button>
+        `,
+        onOpen: (refs) => {
+            refs.body.querySelector("#zoneLocation").textContent = entry.dept + " - Zona " + entry.zone;
+
+            const input = refs.body.querySelector("#zonePrice");
+            input.select();
+
+            refs.footer.querySelector("#saveZonePriceBtn").addEventListener("click", () => saveZonePrice(index));
+            input.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    saveZonePrice(index);
+                }
+            });
+        }
+    });
+}
+
+function saveZonePrice(index) {
+    const entry = PRICE_BY_ZONE[index];
+    const input = document.getElementById("zonePrice");
+    const price = Number(input.value);
+
+    if (!price || price <= 0) {
+        setModalError("El precio debe ser mayor a cero.");
+        input.focus();
+        return;
+    }
+
+    entry.price = price;
+    closeModal();
+    render();
+}
+
+function openDeleteZonePriceModal(index) {
+    const entry = PRICE_BY_ZONE[index];
+    if (!entry) return;
+
+    openModal({
+        title: "Eliminar precio",
+        body: `
+            <p>Vas a eliminar el precio de <span id="zoneTarget" class="strong"></span>.</p>
+            <p class="muted small">Las cotizaciones ya guardadas no se modifican.</p>
+        `,
+        footer: `
+            <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+            <button id="confirmDeleteZoneBtn" class="btn btn-danger">Eliminar</button>
+        `,
+        onOpen: (refs) => {
+            refs.body.querySelector("#zoneTarget").textContent = entry.dept + " - Zona " + entry.zone;
+            refs.footer.querySelector("#confirmDeleteZoneBtn").addEventListener("click", () => deleteZonePrice(index));
+        }
+    });
+}
+
+function deleteZonePrice(index) {
+    PRICE_BY_ZONE.splice(index, 1);
+    closeModal();
+    render();
+}

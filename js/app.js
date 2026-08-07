@@ -717,20 +717,19 @@ function renderAdminDashboard() {
     </div>`;
 }
 
-/* Cambiar el precio base de un tipo de gramilla */
-function editGrassPrice(id) {
-  const g = GRASS_TYPES.find(x => x.id === id);
-  const nuevo = prompt(`Nuevo precio para ${g.name} (Q por ${g.unit})`, g.price);
-  if (nuevo === null) return; /* el usuario le dio cancelar */
-  const valor = Number(nuevo);
-  if (isNaN(valor) || valor <= 0) { alert("Ingresa un numero valido mayor a cero"); return; }
-  g.price = valor;
-  render();
-}
-
 function renderAdminPrices() {
   const grassRows = GRASS_TYPES.map(g => `<div class="list-row"><span>${g.name}</span><div class="flex-gap"><span class="mono strong">${fmtQ(g.price)} / ${g.unit}</span><button class="btn btn-ghost small-btn" onclick="openEditGrassPriceModal('${g.id}')">Editar</button></div></div>`).join("");
-  const zoneRows = PRICE_BY_ZONE.map(p => `<tr><td>${p.dept}</td><td>${p.zone}</td><td class="right mono">${fmtQ(p.price)}</td><td class="right"><button class="link-btn">Editar</button></td></tr>`).join("");
+  const zoneRows = PRICE_BY_ZONE.map((p, i) => `<tr>
+    <td>${p.dept}</td>
+    <td>${p.zone}</td>
+    <td class="right mono">${fmtQ(p.price)}</td>
+    <td>
+      <div class="row-actions">
+        <button class="link-btn" onclick="openEditZonePriceModal(${i})">Editar</button>
+        <button class="link-btn danger" onclick="openDeleteZonePriceModal(${i})">Eliminar</button>
+      </div>
+    </td>
+  </tr>`).join("") || `<tr><td colspan="4" class="empty-cell">Aun no hay precios por ubicacion registrados.</td></tr>`;
 
   return pageHeader("Precios", "Gestiona los precios base de gramilla por tipo y por ubicacion") + `
     <div class="card">

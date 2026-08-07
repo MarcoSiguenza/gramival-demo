@@ -10,6 +10,8 @@
   --amber-dark:#C96C1B;
   --slate:#5C6B63;
   --white:#FFFFFF;
+  --danger:#B4342A;
+  --danger-dark:#8F2A22;
 }
 
 *{ box-sizing:border-box; }
@@ -324,5 +326,10 @@ body.modal-open{
 .chip-list{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
 .chip{ display:inline-flex; align-items:center; gap:6px; font-size:12px; }
 .chip-remove{ border:none; background:none; cursor:pointer; font-size:14px; line-height:1; color:inherit; padding:0; }
-.form-error{ color:#B4342A; font-size:13px; font-weight:600; margin-bottom:14px; }
+.form-error{ color:var(--danger); font-size:13px; font-weight:600; margin-bottom:14px; }
 .flex-gap .btn{ flex-shrink:0; }
+.row-actions{ display:flex; gap:12px; justify-content:flex-end; }
+.btn-danger{ background:var(--danger); color:#fff; }
+.btn-danger:hover{ background:var(--danger-dark); }
+.link-btn.danger{ color:var(--danger); }
+.link-btn.danger:hover{ color:var(--danger-dark); }

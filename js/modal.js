@@ -87,9 +87,8 @@
   }
 
   function focusFirstField() {
-    const first = getRefs().body.querySelector(
-      "input, select, textarea, button"
-    );
+const first = getRefs().body.querySelector("input, select, textarea, button")
+      || getRefs().footer.querySelector("button");
     if (first) first.focus();
   }
 
